@@ -1,0 +1,22 @@
+<p-toast position="top-center" key="verEmpresasToast"></p-toast>
+<div class="card m-auto text-center">
+    <h2>Lista de empresas</h2>
+</div>
+<div class="card">
+    <p-table [value]="empresas" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+                <th pSortableColumn="documento">Documento <p-sortIcon field="documento"></p-sortIcon></th>
+                <th pSortableColumn="telefono">Teléfono <p-sortIcon field="telefono"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-empresa>
+            <tr>
+                <td>{{empresa.nombre}}</td>
+                <td>{{empresa.documento}}</td>
+                <td>{{empresa.telefono}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

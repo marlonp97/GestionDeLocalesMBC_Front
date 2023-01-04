@@ -1,0 +1,48 @@
+<p-toast position="top-center" key="verInformeToast"></p-toast>
+<div class="grid">
+    <div class="col-2 m-auto">
+    </div>
+    <div class="col-8 m-auto text-center">
+        <h2>Informe de pagos</h2>
+    </div>
+    <div class="col-2 m-auto text-center">
+        <button pButton pRipple type="button" label="Generar informe" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="generarInformeCSV()"></button>
+    </div>
+</div>
+<div class="card">
+    <p-table [value]="informes" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion"></p-sortIcon></th>
+                <th pSortableColumn="usuario">Usuario <p-sortIcon field="usuario"></p-sortIcon></th>
+                <th pSortableColumn="empresa">Empresa <p-sortIcon field="empresa"></p-sortIcon></th>
+                <th pSortableColumn="local">Local <p-sortIcon field="local"></p-sortIcon></th>
+                <th pSortableColumn="fechaVencimiento">Fecha de vencimiento <p-sortIcon field="fechaVencimiento"></p-sortIcon></th>
+                <th pSortableColumn="fechaPago">Fecha de pago <p-sortIcon field="fechaPago"></p-sortIcon></th>
+                <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
+                <th pSortableColumn="valorPagado">Valor pagado <p-sortIcon field="valorPagado"></p-sortIcon></th>
+                <th pSortableColumn="tipoPago">Tipo <p-sortIcon field="tipoPago"></p-sortIcon></th>
+                <th pSortableColumn="soporte">Soporte <p-sortIcon field="soporte"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-informe>
+            <tr>
+                <td>{{informe.descripcion}}</td>
+                <td>{{informe.usuario}}</td>
+                <td>{{informe.empresa}}</td>
+                <td>{{informe.local}}</td>
+                <td>{{informe.fechaVencimiento}}</td>
+                <td>{{informe.fechaPago}}</td>
+                <td>{{informe.precio}}</td>
+                <td>{{informe.valorPagado}}</td>
+                <td>{{informe.tipoPago}}</td>
+                <td>
+                    <div *ngIf="informe.soporte != null; else elseBlock">
+                        <button pButton pRipple type="button" icon="pi pi-download" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="bajarArchivo(informe.soporte)"></button>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

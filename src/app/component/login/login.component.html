@@ -1,0 +1,24 @@
+<p-toast position="top-center" key="loginToast"></p-toast>
+<div id="fondo">
+    <div id="fondo-login">
+        <div id="logo">
+            <img src="assets/TC_Logo.png" width="320">
+        </div>
+        <div id="mensaje">
+            <h4 class="text-green-700">Acceda para gestionar los pagos de sus locales</h4>
+        </div>
+        <div id="login">
+            <h5>Correo electrónico</h5>
+            <div class="p-input-icon-right">
+                <i class="pi pi-id-card"></i>
+                <input [(ngModel)]="usuarioLogin.correo" type="email" placeholder="Correo electrónico" pInputText />
+            </div>
+            <h5>Contraseña</h5>
+            <p-password [(ngModel)]="usuarioLogin.clave" placeholder="Contraseña" [toggleMask]="true" [feedback]="false"></p-password>
+            <br>
+            <br>
+            <br>
+            <button pButton pRipple type="button" label="Ingresar" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="login()"></button>
+        </div>
+    </div>
+</div>

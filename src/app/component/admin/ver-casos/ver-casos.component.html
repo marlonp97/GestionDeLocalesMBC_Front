@@ -1,0 +1,92 @@
+<p-toast position="top-center" key="verCasosToast"></p-toast>
+<div class="card m-auto text-center">
+    <h2>Lista de casos</h2>
+</div>
+<div class="card">
+    <p-table [value]="casos" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="descripcion">Descripción del caso <p-sortIcon field="descripcion"></p-sortIcon></th>
+                <th pSortableColumn="usuario">Usuario <p-sortIcon field="usuario"></p-sortIcon></th>
+                <th pSortableColumn="empresa">Empresa <p-sortIcon field="empresa"></p-sortIcon></th>
+                <th pSortableColumn="local">Local <p-sortIcon field="local"></p-sortIcon></th>
+                <th pSortableColumn="pagoCaso.descripcion">Descripción del pago <p-sortIcon field="pagoCaso.descripcion"></p-sortIcon></th>
+                <th pSortableColumn="soporte">Soporte del caso <p-sortIcon field="soporte"></p-sortIcon></th>
+                <th pSortableColumn="estadoCaso">Estado <p-sortIcon field="estadoCaso"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-caso>
+            <tr>
+                <td>{{caso.descripcion}}</td>
+                <td>{{caso.usuario}}</td>
+                <td>{{caso.empresa}}</td>
+                <td>{{caso.local}}</td>
+                <td>{{(caso.pagoCaso != null)? caso.pagoCaso.descripcion : null}}</td>
+                <td>
+                    <div *ngIf="caso.soporte != null;">
+                        <button pButton pRipple type="button" icon="pi pi-download" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="bajarArchivo(caso.soporte)"></button>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="caso.estadoCaso == 'Pendiente'; else elseBlock">
+                        <button pButton pRipple type="button" label="Revisar" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="mostrarDialogVerificarCaso(caso.idCaso)"></button>
+                    </div>
+                    <ng-template #elseBlock>
+                        {{caso.estadoCaso}}
+                    </ng-template>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-dialog [(visible)]="displayVerificarCaso" [style]="{width: '95vw', height: '95vw'}" header="Verificar caso" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="descripcionCaso">Descripción del caso</label>
+                    <textarea pInputTextarea class="p-inputtext-sm" id="descripcionCaso" placeholder="Descripción del caso" [disabled]="true" [(ngModel)]="caso.descripcion" rows="5" style="resize: none;"></textarea>
+                </div>
+                <div class="field col">
+                    <label for="descripcionPago">Descripción del pago</label>
+                    <textarea pInputTextarea class="p-inputtext-sm" id="descripcionPago" placeholder="Descripción del pago" [disabled]="true" [(ngModel)]="caso.pagoCaso.descripcion" rows="5" style="resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="soporte">Soporte del caso</label>
+                    <div *ngIf="caso.soporte != null; else elseBlock">
+                        <button pButton pRipple type="button" icon="pi pi-download" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="bajarArchivo(caso.soporte)"></button>
+                    </div>
+                    <ng-template #elseBlock>
+                        <input pInputText class="p-inputtext-sm" id="soporte" placeholder="No tiene soporte" type="text" [disabled]="true" [(ngModel)]="caso.soporte"/>
+                    </ng-template>
+                </div>
+                <div class="field col">
+                    <label for="empresa">Empresa</label>
+                    <input pInputText class="p-inputtext-sm" id="empresa" placeholder="Empresa" type="text" [disabled]="true" [(ngModel)]="caso.empresa"/>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="usuario">Usuario</label>
+                    <input pInputText class="p-inputtext-sm" id="usuario" placeholder="Usuario" type="text" [disabled]="true" [(ngModel)]="caso.usuario"/>
+                </div>
+                <div class="field col">
+                    <label for="local">Local</label>
+                    <input pInputText class="p-inputtext-sm" id="local" placeholder="Local" type="text" [disabled]="true" [(ngModel)]="caso.local"/>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="card">
+                <div class="grid -my-4">
+                    <div class="col-10 m-auto">
+                        <p class="text-sm text-center">** Por favor antes de finalizar el caso, realice manualmente los cambios del pago correspondiente en la sección de pagos</p>
+                    </div>
+                    <div class="card m-auto">
+                        <button pButton pRipple type="button" label="Finalizar caso" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="finalizarCaso(caso.idCaso)"></button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

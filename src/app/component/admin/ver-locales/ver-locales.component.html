@@ -1,0 +1,26 @@
+<p-toast position="top-center" key="verLocalesToast"></p-toast>
+<div class="card m-auto text-center">
+    <h2>Lista de locales</h2>
+</div>
+<div class="card">
+    <p-table [value]="locales" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="direccion">Dirección <p-sortIcon field="direccion"></p-sortIcon></th>
+                <th pSortableColumn="ciudadLocal">Ciudad <p-sortIcon field="ciudadLocal"></p-sortIcon></th>
+                <th pSortableColumn="cuotaArriendo">Cuota de arriendo <p-sortIcon field="cuotaArriendo"></p-sortIcon></th>
+                <th pSortableColumn="cuotaAdministracion">Cuota de administración <p-sortIcon field="cuotaAdministracion"></p-sortIcon></th>
+                <th pSortableColumn="empresa">Empresa <p-sortIcon field="empresa"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-local>
+            <tr>
+                <td>{{local.direccion}}</td>
+                <td>{{local.ciudadLocal}}</td>
+                <td>{{local.cuotaArriendo}}</td>
+                <td>{{local.cuotaAdministracion}}</td>
+                <td>{{local.empresa}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

@@ -1,0 +1,52 @@
+#fondo {
+    background-image: url("src/assets/Fondo_pagina.png");
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+}
+
+#fondo #fondo-login {
+    background-color: #FFFFFF;
+    position: absolute;
+    left: 15vw;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 400px;
+    background-size: cover;
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    box-shadow: 0px 0px 15px #CCCCCC;
+}
+
+#fondo #fondo-login #logo {
+    position: absolute;
+    left: 40px;
+    top: 50px;
+    margin: 0;
+    padding: 0;
+    width: 320px;
+}
+
+#fondo #fondo-login #mensaje {
+    position: absolute;
+    left: 40px;
+    top: 140px;
+    margin: 0;
+    padding: 0;
+    width: 320px;
+}
+
+#fondo #fondo-login #login {
+    position: absolute;
+    left: 80px;
+    top: 220px;
+    margin: 0;
+    padding: 0;
+}

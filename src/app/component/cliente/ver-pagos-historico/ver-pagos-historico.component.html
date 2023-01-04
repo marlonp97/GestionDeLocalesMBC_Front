@@ -1,0 +1,36 @@
+<p-toast position="top-center" key="verPagosHistoricoToast"></p-toast>
+<div class="card m-auto text-center">
+    <h2>Histórico de pagos</h2>
+</div>
+<div class="card">
+    <p-table [value]="pagosHistorico" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion"></p-sortIcon></th>
+                <th pSortableColumn="local">Local <p-sortIcon field="local"></p-sortIcon></th>
+                <th pSortableColumn="fechaVencimiento">Fecha de vencimiento <p-sortIcon field="fechaVencimiento"></p-sortIcon></th>
+                <th pSortableColumn="fechaPago">Fecha de pago <p-sortIcon field="fechaPago"></p-sortIcon></th>
+                <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
+                <th pSortableColumn="valorPagado">Valor pagado <p-sortIcon field="valorPagado"></p-sortIcon></th>
+                <th pSortableColumn="tipoPago">Tipo <p-sortIcon field="tipoPago"></p-sortIcon></th>
+                <th pSortableColumn="soporte">Soporte <p-sortIcon field="soporte"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-pagoHistorico>
+            <tr>
+                <td>{{pagoHistorico.descripcion}}</td>
+                <td>{{pagoHistorico.local}}</td>
+                <td>{{pagoHistorico.fechaVencimiento}}</td>
+                <td>{{pagoHistorico.fechaPago}}</td>
+                <td>{{pagoHistorico.precio}}</td>
+                <td>{{pagoHistorico.valorPagado}}</td>
+                <td>{{pagoHistorico.tipoPago}}</td>
+                <td>
+                    <div *ngIf="pagoHistorico.soporte != null;">
+                        <button pButton pRipple type="button" icon="pi pi-download" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="bajarArchivo(pagoHistorico.soporte)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

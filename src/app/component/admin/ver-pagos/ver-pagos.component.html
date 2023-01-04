@@ -1,0 +1,266 @@
+<p-toast position="top-center" key="verPagosToast"></p-toast>
+<div class="grid">
+    <div class="col-2 m-auto text-center">
+        <button pButton pRipple type="button" label="Agregar pago" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="mostrarDialogAgregarPago()"></button>
+    </div>
+    <div class="col-8 m-auto text-center">
+        <h2>Lista de pagos</h2>
+    </div>
+    <div class="col-2 m-auto text-center">
+        <button pButton pRipple type="button" label="Subir CSV" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="mostrarDialogSubirCSV()"></button>
+    </div>
+</div>
+<div class="card">
+    <p-table [value]="pagos" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="descripcion">Descripción <p-sortIcon field="descripcion"></p-sortIcon></th>
+                <th pSortableColumn="usuarioPago.correo">Usuario <p-sortIcon field="usuarioPago.correo"></p-sortIcon></th>
+                <th pSortableColumn="empresaPago.nombre">Empresa <p-sortIcon field="empresaPago.nombre"></p-sortIcon></th>
+                <th pSortableColumn="localPago.direccion">Local <p-sortIcon field="localPago.direccion"></p-sortIcon></th>
+                <th pSortableColumn="fechaVencimiento">Fecha de vencimiento <p-sortIcon field="fechaVencimiento"></p-sortIcon></th>
+                <th pSortableColumn="fechaPago">Fecha de pago <p-sortIcon field="fechaPago"></p-sortIcon></th>
+                <th pSortableColumn="precio">Precio <p-sortIcon field="precio"></p-sortIcon></th>
+                <th pSortableColumn="valorPagado">Valor pagado <p-sortIcon field="valorPagado"></p-sortIcon></th>
+                <th pSortableColumn="tipoPago.tipo">Tipo <p-sortIcon field="tipoPago.tipo"></p-sortIcon></th>
+                <th pSortableColumn="soporte">Soporte <p-sortIcon field="soporte"></p-sortIcon></th>
+                <th pSortableColumn="estadoPago.estado">Estado <p-sortIcon field="estadoPago.estado"></p-sortIcon></th>
+                <th>Acciones</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-pago>
+            <tr>
+                <td>{{pago.descripcion}}</td>
+                <td>{{(pago.usuarioPago != null)? pago.usuarioPago.correo : null}}</td>
+                <td>{{(pago.empresaPago != null)? pago.empresaPago.nombre : null}}</td>
+                <td>{{(pago.localPago != null)? pago.localPago.direccion : null}}</td>
+                <td>{{pago.fechaVencimiento}}</td>
+                <td>{{pago.fechaPago}}</td>
+                <td>{{pago.precio}}</td>
+                <td>{{pago.valorPagado}}</td>
+                <td>{{(pago.tipoPago != null)? pago.tipoPago.tipo : null}}</td>
+                <td>
+                    <div *ngIf="pago.soporte != null; else elseBlock">
+                        <button pButton pRipple type="button" icon="pi pi-download" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="bajarArchivo(pago.soporte)"></button>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+                </td>
+                <td>
+                    <div *ngIf="pago.estadoPago != null; else elseBlock">
+                        <div *ngIf="pago.estadoPago.estado == 'Revisión'; else elseBlockInside">                    
+                            <button pButton pRipple type="button" label="Revisar" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="mostrarDialogVerificarPago(pago.idPago)"></button>
+                        </div>
+                        <ng-template #elseBlockInside>
+                            {{pago.estadoPago.estado}}
+                        </ng-template>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+                </td>
+                <td>
+                    <div>
+                        <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-sm p-button-rounded" (click)="mostrarDialogActualizarPago(pago.idPago)"></button>
+                    </div>
+                    <div>
+                        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button-sm p-button-rounded p-button-danger" (click)="eliminarPago(pago.idPago)"></button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-dialog [(visible)]="displayAgregarPago" [style]="{width: '95vw', height: '95vw'}" header="Agregar pago" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="formgrid grid">
+                <div class="field col-6">
+                    <label for="descripcion">Descripción</label>
+                    <textarea pInputTextarea class="p-inputtext-sm" id="descripcion" placeholder="Descripción" [(ngModel)]="pago.descripcion" rows="5" style="resize: none;"></textarea>
+                </div>
+                <div class="field col-6">
+                    <div class="formgrid grid">
+                        <div class="field col-12">
+                            <label for="precio">Precio</label>
+                            <p-inputNumber class="p-inputtext-sm" [(ngModel)]="pago.precio" placeholder="Precio" inputId="precio" mode="currency" currency="COP" locale="es-CO" [maxFractionDigits]="2" [maxlength]="18"></p-inputNumber>
+                        </div>
+                        <div class="field col-12">
+                            <label for="tipo">Tipo</label>
+                            <p-dropdown class="p-inputtext-sm" [options]="tiposPago" [(ngModel)]="pago.tipoPago" placeholder="Seleccione un tipo" optionLabel="tipo" [showClear]="true"></p-dropdown>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="fechaVencimiento">Fecha de vencimiento</label>
+                    <p-inputMask mask="9999-99-99" class="p-inputtext-sm" id="fechaVencimiento" placeholder="Fecha de vencimiento" [(ngModel)]="pago.fechaVencimiento" slotChar="yyyy-mm-dd"></p-inputMask>
+                </div>
+                <div class="field col">
+                    <label for="local">Local</label>
+                    <p-dropdown class="p-inputtext-sm" id="local" [options]="localesPago" [(ngModel)]="pago.localPago" placeholder="Seleccione un local" optionLabel="direccion" [showClear]="true"></p-dropdown>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="card m-auto -my-2">
+                <button pButton pRipple type="button" label="Agregar pago" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="agregarPago()"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+    <p-dialog [(visible)]="displayActualizarPago" [style]="{width: '95vw', height: '95vw'}" header="Actualizar pago" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="formgrid grid">
+                <div class="field col-4">
+                    <label for="descripcion">Descripción</label>
+                    <textarea pInputTextarea class="p-inputtext-sm" id="descripcion" placeholder="Descripción" [(ngModel)]="pago.descripcion" rows="5" style="resize: none;"></textarea>
+                </div>
+                <div class="field col-4">
+                    <div class="formgrid grid">
+                        <div class="field col-12">
+                            <label for="local">Local</label>
+                            <p-dropdown class="p-inputtext-sm" [options]="localesPago" [(ngModel)]="pago.localPago" placeholder="Seleccione un local" optionLabel="direccion" [showClear]="true"></p-dropdown>
+                        </div>
+                        <div class="field col-12">
+                            <label for="fechaVencimiento">Fecha de vencimiento</label>
+                            <p-inputMask mask="9999-99-99" class="p-inputtext-sm" id="fechaVencimiento" placeholder="Fecha de vencimiento" [(ngModel)]="pago.fechaVencimiento" slotChar="yyyy-mm-dd"></p-inputMask>
+                        </div>  
+                    </div>
+                </div>
+                <div class="field col-4">
+                    <div class="formgrid grid">
+                        <div class="field col-12">
+                            <label for="valorPagado">Valor pagado</label>
+                            <p-inputNumber class="p-inputtext-sm" [(ngModel)]="pago.valorPagado" placeholder="Valor pagado" inputId="valorPagado" mode="currency" currency="COP" locale="es-CO" [maxFractionDigits]="2" [maxlength]="18"></p-inputNumber>
+                        </div>
+                        <div class="field col-12">
+                            <label for="tipo">Tipo</label>
+                            <p-dropdown class="p-inputtext-sm" [options]="tiposPago" [(ngModel)]="pago.tipoPago" placeholder="Seleccione un tipo" optionLabel="tipo" [showClear]="true"></p-dropdown>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="usuario">Usuario</label>
+                    <p-dropdown class="p-inputtext-sm" [options]="usuariosPago" [(ngModel)]="pago.usuarioPago" placeholder="Seleccione un usuario" optionLabel="correo" [showClear]="true"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="fechaPago">Fecha de pago</label>
+                    <p-inputMask mask="9999-99-99" class="p-inputtext-sm" id="fechaPago" placeholder="Fecha de pago" [(ngModel)]="pago.fechaPago" slotChar="yyyy-mm-dd"></p-inputMask>
+                </div>
+                <div class="field col">
+                    <label for="estado">Estado</label>
+                    <p-dropdown class="p-inputtext-sm" [options]="estadosPago" [(ngModel)]="pago.estadoPago" placeholder="Seleccione un estado" optionLabel="estado" [showClear]="true"></p-dropdown>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="empresa">Empresa</label>
+                    <p-dropdown class="p-inputtext-sm" [options]="empresasPago" [(ngModel)]="pago.empresaPago" placeholder="Seleccione una empresa" optionLabel="nombre" [showClear]="true"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="precio">Precio</label>
+                    <p-inputNumber class="p-inputtext-sm" [(ngModel)]="pago.precio" placeholder="Precio" inputId="precio" mode="currency" currency="COP" locale="es-CO" [maxFractionDigits]="2" [maxlength]="18"></p-inputNumber>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="card m-auto -my-3">
+                <button pButton pRipple type="button" label="Actualizar pago" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="actualizarPago(pago.idPago)"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+    <p-dialog [(visible)]="displayVerificarPago" [style]="{width: '95vw', height: '95vw'}" header="Verificar pago" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="formgrid grid">
+                <div class="field col-4">
+                    <label for="descripcion">Descripción</label>
+                    <textarea pInputTextarea class="p-inputtext-sm" id="descripcion" placeholder="Descripción" [disabled]="true" [(ngModel)]="pago.descripcion" rows="5" style="resize: none;"></textarea>
+                </div>
+                <div class="field col-4">
+                    <div class="formgrid grid">
+                        <div class="field col-12">
+                            <label for="local">Local</label>
+                            <p-dropdown class="p-inputtext-sm" [options]="localesPago" [(ngModel)]="pago.localPago" placeholder="Seleccione un local" [disabled]="true" optionLabel="direccion" [showClear]="true"></p-dropdown>
+                        </div>
+                        <div class="field col-12">
+                            <label for="valorPagado">Valor pagado</label>
+                            <p-inputNumber class="p-inputtext-sm" [(ngModel)]="pago.valorPagado" placeholder="Valor pagado" [disabled]="true" inputId="valorPagado" mode="currency" currency="COP" locale="es-CO" [maxFractionDigits]="2" [maxlength]="18"></p-inputNumber>
+                        </div>  
+                    </div>
+                </div>
+                <div class="field col-4">
+                    <div class="formgrid grid">
+                        <div class="field col-12">
+                            <label for="fechaVencimiento">Fecha de vencimiento</label>
+                            <p-inputMask mask="9999-99-99" class="p-inputtext-sm" id="fechaVencimiento" placeholder="Fecha de vencimiento" [(ngModel)]="pago.fechaVencimiento" slotChar="yyyy-mm-dd" [disabled]="true"></p-inputMask>
+                        </div>
+                        <div class="field col-12">
+                            <label for="tipo">Tipo</label>
+                            <p-dropdown class="p-inputtext-sm" [options]="tiposPago" [(ngModel)]="pago.tipoPago" placeholder="Seleccione un tipo" [disabled]="true" optionLabel="tipo" [showClear]="true"></p-dropdown>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="usuario">Usuario</label>
+                    <p-dropdown class="p-inputtext-sm" [options]="usuariosPago" [(ngModel)]="pago.usuarioPago" placeholder="Seleccione un usuario" [disabled]="true" optionLabel="correo" [showClear]="true"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="fechaPago">Fecha de pago</label>
+                    <p-inputMask mask="9999-99-99" class="p-inputtext-sm" id="fechaPago" placeholder="Fecha de pago" [(ngModel)]="pago.fechaPago" slotChar="yyyy-mm-dd" [disabled]="true"></p-inputMask>
+                </div>
+                <div class="field col">
+                    <label for="soporte">Soporte</label>
+                    <div *ngIf="pago.soporte != null; else elseBlock">
+                        <button pButton pRipple type="button" icon="pi pi-download" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="bajarArchivo(pago.soporte)"></button>
+                    </div>
+                    <ng-template #elseBlock>
+                        <input pInputText class="p-inputtext-sm" id="soporte" placeholder="No tiene soporte" type="text" [disabled]="true" [(ngModel)]="pago.soporte"/>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="empresa">Empresa</label>
+                    <p-dropdown class="p-inputtext-sm" [options]="empresasPago" [(ngModel)]="pago.empresaPago" placeholder="Seleccione una empresa" [disabled]="true" optionLabel="nombre" [showClear]="true"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="precio">Precio</label>
+                    <p-inputNumber class="p-inputtext-sm" [(ngModel)]="pago.precio" placeholder="Precio" [disabled]="true" inputId="precio" mode="currency" currency="COP" locale="es-CO" [maxFractionDigits]="2" [maxlength]="18"></p-inputNumber>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="card">
+                <div class="grid m-auto -my-3">
+                    <div class="card m-auto">
+                        <button pButton pRipple type="button" label="Rechazar pago" class="p-button-sm p-button-rounded p-button-danger" (click)="rechazarPago(pago.idPago)"></button>
+                    </div>
+                    <div class="card m-auto">
+                        <button pButton pRipple type="button" label="Aprobar pago" class="p-button-sm p-button-rounded" (click)="aprobarPago(pago.idPago)"></button>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dialog>
+    <p-dialog [(visible)]="displaySubirCSV" [style]="{width: '40vw', height: '15rem'}" header="Subir CSV" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="formgrid grid">
+                <div class="field col">
+                    <div class="formgrid grid">
+                        <div class="field col-3">
+                            <label for="archivo">Cargar CSV</label>
+                        </div>
+                        <div class="field col-9">
+                            <input class="p-inputtext-sm" type="file" id="archivo" (change)="seleccionarArchivoCSV($event)"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="card m-auto -my-2">
+                <button pButton pRipple type="button" label="Subir CSV" [disabled]="!archivoSeleccionadoCSV" class="p-button-sm p-button-rounded text-green-700 bg-yellow-400 border-transparent" (click)="subirArchivoCSV()"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+</div>

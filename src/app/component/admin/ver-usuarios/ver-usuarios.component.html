@@ -1,0 +1,28 @@
+<p-toast position="top-center" key="verUsuariosToast"></p-toast>
+<div class="card m-auto text-center">
+    <h2>Lista de usuarios</h2>
+</div>
+<div class="card">
+    <p-table [value]="usuarios" [paginator]="true" [rows]="8" [showCurrentPageReport]="true" currentPageReportTemplate="Mostrado registros {first} a {last} de {totalRecords}" [rowsPerPageOptions]="[8,25,50,{showAll: 'Todo'}]" styleClass="p-datatable-sm p-datatable-gridlines">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
+                <th pSortableColumn="apellido">Apellido <p-sortIcon field="apellido"></p-sortIcon></th>
+                <th pSortableColumn="correo">Correo electrónico <p-sortIcon field="correo"></p-sortIcon></th>
+                <th pSortableColumn="telefono">Teléfono <p-sortIcon field="telefono"></p-sortIcon></th>
+                <th pSortableColumn="rolUsuario">Rol <p-sortIcon field="rolUsuario"></p-sortIcon></th>
+                <th pSortableColumn="empresa">Empresa <p-sortIcon field="empresa"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-usuario>
+            <tr>
+                <td>{{usuario.nombre}}</td>
+                <td>{{usuario.apellido}}</td>
+                <td>{{usuario.correo}}</td>
+                <td>{{usuario.telefono}}</td>
+                <td>{{usuario.rolUsuario}}</td>
+                <td>{{usuario.empresa}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
